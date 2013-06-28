@@ -7,9 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		AD55D0EC177DA56D00115BBD /* VLCoreUtilitiesLib.m in Sources */ = {isa = PBXBuildFile; fileRef = AD55D0EB177DA56D00115BBD /* VLCoreUtilitiesLib.m */; };
 		ADD2861F177CF0A600B57165 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = ADD2861E177CF0A600B57165 /* Foundation.framework */; };
 		ADD28622177CF0A600B57165 /* main.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD28621177CF0A600B57165 /* main.m */; };
 		ADD28626177CF0A600B57165 /* Geometry.1 in CopyFiles */ = {isa = PBXBuildFile; fileRef = ADD28625177CF0A600B57165 /* Geometry.1 */; };
+		ADD2862E177CF3AF00B57165 /* VLGeometryInputSpecificationController.m in Sources */ = {isa = PBXBuildFile; fileRef = ADD2862D177CF3AF00B57165 /* VLGeometryInputSpecificationController.m */; };
 /* End PBXBuildFile section */
 
 /* Begin PBXCopyFilesBuildPhase section */
@@ -26,11 +28,15 @@
 /* End PBXCopyFilesBuildPhase section */
 
 /* Begin PBXFileReference section */
+		AD55D0EA177DA56D00115BBD /* VLCoreUtilitiesLib.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLCoreUtilitiesLib.h; sourceTree = "<group>"; };
+		AD55D0EB177DA56D00115BBD /* VLCoreUtilitiesLib.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VLCoreUtilitiesLib.m; sourceTree = "<group>"; };
 		ADD2861B177CF0A600B57165 /* Geometry */ = {isa = PBXFileReference; explicitFileType = "compiled.mach-o.executable"; includeInIndex = 0; path = Geometry; sourceTree = BUILT_PRODUCTS_DIR; };
 		ADD2861E177CF0A600B57165 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
 		ADD28621177CF0A600B57165 /* main.m */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.objc; path = main.m; sourceTree = "<group>"; };
 		ADD28624177CF0A600B57165 /* Geometry-Prefix.pch */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.c.h; path = "Geometry-Prefix.pch"; sourceTree = "<group>"; };
 		ADD28625177CF0A600B57165 /* Geometry.1 */ = {isa = PBXFileReference; lastKnownFileType = text.man; path = Geometry.1; sourceTree = "<group>"; };
+		ADD2862C177CF3AF00B57165 /* VLGeometryInputSpecificationController.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = VLGeometryInputSpecificationController.h; sourceTree = "<group>"; };
+		ADD2862D177CF3AF00B57165 /* VLGeometryInputSpecificationController.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = VLGeometryInputSpecificationController.m; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
 /* Begin PBXFrameworksBuildPhase section */
@@ -45,6 +51,15 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		AD55D0E9177DA55400115BBD /* utilities */ = {
+			isa = PBXGroup;
+			children = (
+				AD55D0EA177DA56D00115BBD /* VLCoreUtilitiesLib.h */,
+				AD55D0EB177DA56D00115BBD /* VLCoreUtilitiesLib.m */,
+			);
+			name = utilities;
+			sourceTree = "<group>";
+		};
 		ADD28612177CF0A600B57165 = {
 			isa = PBXGroup;
 			children = (
@@ -73,7 +88,10 @@
 		ADD28620177CF0A600B57165 /* Geometry */ = {
 			isa = PBXGroup;
 			children = (
+				AD55D0E9177DA55400115BBD /* utilities */,
 				ADD28621177CF0A600B57165 /* main.m */,
+				ADD2862C177CF3AF00B57165 /* VLGeometryInputSpecificationController.h */,
+				ADD2862D177CF3AF00B57165 /* VLGeometryInputSpecificationController.m */,
 				ADD28625177CF0A600B57165 /* Geometry.1 */,
 				ADD28623177CF0A600B57165 /* Supporting Files */,
 			);
@@ -139,6 +157,8 @@
 			isa = PBXSourcesBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				ADD2862E177CF3AF00B57165 /* VLGeometryInputSpecificationController.m in Sources */,
+				AD55D0EC177DA56D00115BBD /* VLCoreUtilitiesLib.m in Sources */,
 				ADD28622177CF0A600B57165 /* main.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
@@ -253,6 +273,7 @@
 				ADD2862B177CF0A600B57165 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 	};
