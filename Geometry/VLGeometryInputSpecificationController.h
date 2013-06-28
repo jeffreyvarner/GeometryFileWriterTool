@@ -19,6 +19,7 @@ typedef enum {
 {
     @private
     NSMutableArray *_myArgsArray;
+    NSArray *_myTriangleNodeArray;
 }
 
 // custom init method

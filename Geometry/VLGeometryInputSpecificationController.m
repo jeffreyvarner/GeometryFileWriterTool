@@ -18,10 +18,12 @@
 -(void)loadHeaderIntoBuffer:(NSMutableString *)buffer;
 -(void)loadFooterIntoBuffer:(NSMutableString *)buffer;
 -(void)loadNodeArrayIntoBuffer:(NSMutableString *)buffer usingBlueprintDocument:(NSXMLDocument *)document;
+-(void)loadEdgeParameterBlockIntoBuffer:(NSMutableString *)buffer usingBlueprintDocument:(NSXMLDocument *)document;
 -(void)writeGeometryBuffer:(NSMutableString *)buffer usingBlueprintDocument:(NSXMLDocument *)document;
 
 // private props -
 @property (strong) NSMutableArray *myArgsArray;
+@property (strong) NSArray *myTriangleNodeArray;
 
 
 @end
@@ -78,6 +80,9 @@
     // load the triangle_array file
     [self loadTriangleArrayIntoBuffer:buffer usingBlueprintDocument:document];
     
+    // load the edge parameters -
+    [self loadEdgeParameterBlockIntoBuffer:buffer usingBlueprintDocument:document];
+    
     // footer -
     [self loadFooterIntoBuffer:buffer];
     
@@ -97,6 +102,79 @@
     [buffer appendString:@"</geometry>\n"];
 }
 
+
+-(void)loadEdgeParameterBlockIntoBuffer:(NSMutableString *)buffer usingBlueprintDocument:(NSXMLDocument *)document
+{
+    // Get the path for node array -
+    NSError *error;
+    NSString *edge_spring_constant = [[[document nodesForXPath:@"//listOfProperties/property[@key='EDGE_SPRING_CONSTANT']/@value" error:&error] lastObject] stringValue];
+    NSString *edge_damping_constant = [[[document nodesForXPath:@"//listOfProperties/property[@key='EDGE_DAMPING_CONSTANT']/@value" error:&error] lastObject] stringValue];
+    if (error == nil &&
+        edge_damping_constant != nil &&
+        edge_spring_constant != nil)
+    {
+        // build points array text -
+        [buffer appendString:@"\n"];
+        [buffer appendString:@"\t<listOfEdges>\n"];
+        
+        // Number formatter -
+        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
+        
+        // Triangle array -
+        NSArray *triangle_array = [self myTriangleNodeArray];
+        NSInteger counter = 0;
+        for (NSArray *row_array in triangle_array)
+        {
+            // array -
+            NSMutableArray *value_array = [NSMutableArray array];
+            
+            // space delimited -
+            for (NSString *value_string in row_array)
+            {
+                if ([value_string isEqualToString:@""]== NO)
+                {
+                    // Convert to a number -
+                    NSNumber *number = [formatter numberFromString:value_string];
+                    NSString *converted_number = [number stringValue];
+                    
+                    // grab the value -
+                    [value_array addObject:converted_number];
+                }
+            }
+
+            // edge -
+            [buffer appendFormat:@"\t\t<edge index='%lu' spring_constant='%@' damping_constant='%@'",counter,edge_spring_constant,edge_damping_constant];
+            [buffer appendFormat:@" start_node='%@'",[value_array objectAtIndex:0]];
+            [buffer appendFormat:@" end_node='%@'/>\n",[value_array objectAtIndex:1]];
+            
+            // edge -
+            counter = counter + 1;
+            [buffer appendFormat:@"\t\t<edge index='%lu' spring_constant='%@' damping_constant='%@'",counter,edge_spring_constant,edge_damping_constant];
+            [buffer appendFormat:@" start_node='%@'",[value_array objectAtIndex:1]];
+            [buffer appendFormat:@" end_node='%@'/>\n",[value_array objectAtIndex:2]];
+            
+            // edge -
+            counter = counter + 1;
+            [buffer appendFormat:@"\t\t<edge index='%lu' spring_constant='%@' damping_constant='%@'",counter,edge_spring_constant,edge_damping_constant];
+            [buffer appendFormat:@" start_node='%@'",[value_array objectAtIndex:2]];
+            [buffer appendFormat:@" end_node='%@'/>\n",[value_array objectAtIndex:0]];
+            
+            // update the counter -
+            counter = counter + 1;
+            
+            // add a new line -
+            [buffer appendString:@"\n"];
+            
+            // clear -
+            [value_array removeAllObjects];
+        }
+        
+        
+        // end -
+        [buffer appendString:@"\t</listOfEdges>\n"];
+    }
+}
 
 -(void)loadNodeArrayIntoBuffer:(NSMutableString *)buffer usingBlueprintDocument:(NSXMLDocument *)document
 {
@@ -127,7 +205,6 @@
                 {
                     // grab the value -
                     [value_array addObject:value_string];
-                    
                 }
             }
             
@@ -159,9 +236,16 @@
         // get points array -
         NSArray *points_array = [VLCoreUtilitiesLib loadGenericFlatFile:node_array_path withRecordDeliminator:@"\n" withFieldDeliminator:@" "];
         
+        // grab the points array -
+        self.myTriangleNodeArray = points_array;
+        
         // build points array text -
         [buffer appendString:@"\n"];
         [buffer appendString:@"\t<listOfTriangles>\n"];
+        
+        // Number formatter -
+        NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
+        [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
         
         // iterate through list of points -
         NSInteger counter = 0;
@@ -176,9 +260,13 @@
             {
                 if ([value_string isEqualToString:@""]== NO)
                 {
-                    // grab the value -
-                    [value_array addObject:value_string];
                     
+                    // Convert to a number -
+                    NSNumber *number = [formatter numberFromString:value_string];
+                    NSString *converted_number = [number stringValue];
+                    
+                    // grab the value -
+                    [value_array addObject:converted_number];                    
                 }
             }
                         
@@ -225,6 +313,7 @@
 {
     // Clean my iVars -
     self.myArgsArray = nil;
+    self.myTriangleNodeArray = nil;
     
     // Remove me from the NSNotificationCenter -
     [[NSNotificationCenter defaultCenter] removeObserver:self];
