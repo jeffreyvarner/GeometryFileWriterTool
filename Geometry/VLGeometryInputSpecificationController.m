@@ -132,7 +132,9 @@
             }
             
             // write the line -
-            [buffer appendFormat:@"\t\t<node index='%lu' x_value='%@' y_value='%@'/>\n",counter,[value_array objectAtIndex:0],[value_array objectAtIndex:1]];
+            [buffer appendFormat:@"\t\t<node index='%lu' x_value='%@' y_value='%@'/>\n",counter,
+             [value_array objectAtIndex:0],
+             [value_array objectAtIndex:1]];
             
             // clear -
             [value_array removeAllObjects];
