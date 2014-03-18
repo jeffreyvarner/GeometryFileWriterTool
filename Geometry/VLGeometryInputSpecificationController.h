@@ -8,6 +8,8 @@
 
 #import <Foundation/Foundation.h>
 
+#define MAX_NODES 10000
+
 typedef enum {
     
     VLGeometryInputSpecificationInputFilePath = 0,
@@ -17,9 +19,12 @@ typedef enum {
 
 @interface VLGeometryInputSpecificationController : NSObject
 {
-    @private
+    
+@private
     NSMutableArray *_myArgsArray;
     NSArray *_myTriangleNodeArray;
+    int numberOfNodes;
+    int myEdgeArray[MAX_NODES][MAX_NODES];
 }
 
 // custom init method

@@ -5,7 +5,6 @@
 //  Created by Jeffrey Varner on 6/27/13.
 //  Copyright (c) 2013 Varnerlab. All rights reserved.
 //
-//test comment
 
 #import "VLGeometryInputSpecificationController.h"
 
@@ -22,15 +21,14 @@
 -(void)loadEdgeParameterBlockIntoBuffer:(NSMutableString *)buffer usingBlueprintDocument:(NSXMLDocument *)document;
 -(void)writeGeometryBuffer:(NSMutableString *)buffer usingBlueprintDocument:(NSXMLDocument *)document;
 
+
 // private props -
 @property (strong) NSMutableArray *myArgsArray;
 @property (strong) NSArray *myTriangleNodeArray;
 
-
 @end
 
 @implementation VLGeometryInputSpecificationController
-
 
 // special init method
 -(id)initWithArgumentsArray:(NSArray *)array
@@ -46,7 +44,7 @@
         [[self myArgsArray] addObjectsFromArray:array];
     }
     return self;
-
+    
 }
 
 -(void)dealloc
@@ -91,6 +89,8 @@
     [self writeGeometryBuffer:buffer usingBlueprintDocument:document];
 }
 
+
+
 #pragma mark - private helper methods
 -(void)loadHeaderIntoBuffer:(NSMutableString *)buffer
 {
@@ -122,13 +122,26 @@
         NSNumberFormatter *formatter = [[NSNumberFormatter alloc] init];
         [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
         
+        // edge array
+        int N = numberOfNodes;
+        
+        // zero the edge array - not neccessary as the array is initialized to 0 anyways
+        for (int i = 0; i < N; i++) {
+            for (int j = 0; j < N; j++) {
+                myEdgeArray[i][j] = 0;
+            }
+        }
+        
         // Triangle array -
         NSArray *triangle_array = [self myTriangleNodeArray];
-        NSInteger counter = 0;
+        NSInteger counter = 1; //ac2283 made this change to see if this solves the edge array problem.
+        //NSInteger counter = 0;
+        
         for (NSArray *row_array in triangle_array)
         {
             // array -
             NSMutableArray *value_array = [NSMutableArray array];
+            
             
             // space delimited -
             for (NSString *value_string in row_array)
@@ -143,7 +156,7 @@
                     [value_array addObject:converted_number];
                 }
             }
-
+            
             // edge -
             [buffer appendFormat:@"\t\t<edge index='%lu' spring_constant='%@' damping_constant='%@'",counter,edge_spring_constant,edge_damping_constant];
             [buffer appendFormat:@" start_node='%@'",[value_array objectAtIndex:0]];
@@ -161,6 +174,20 @@
             [buffer appendFormat:@" start_node='%@'",[value_array objectAtIndex:2]];
             [buffer appendFormat:@" end_node='%@'/>\n",[value_array objectAtIndex:0]];
             
+            // update myEdgeArray
+            int rowIndex = [[value_array objectAtIndex:0] intValue];
+            int colIndex = [[value_array objectAtIndex:1] intValue];
+            myEdgeArray[rowIndex -1][colIndex -1] = 1;
+            
+            rowIndex = [[value_array objectAtIndex:1] intValue];
+            colIndex = [[value_array objectAtIndex:2] intValue];
+            myEdgeArray[rowIndex -1][colIndex -1] = 1;
+            
+            rowIndex = [[value_array objectAtIndex:2] intValue];
+            colIndex = [[value_array objectAtIndex:0] intValue];
+            myEdgeArray[rowIndex -1][colIndex -1] = 1;
+            
+            
             // update the counter -
             counter = counter + 1;
             
@@ -171,11 +198,29 @@
             [value_array removeAllObjects];
         }
         
+        // check that all possible edges are added. If not, add the remaining edges.
+        
+        for (int i = 0; i<N; i++){
+            for (int j = 0; j<N; j++) {
+                if ( myEdgeArray[i][j]==1 && myEdgeArray[j][i]==0) {
+                    
+                    [buffer appendFormat:@"\t\t<edge index='%lu' spring_constant='%@' damping_constant='%@'",counter,edge_spring_constant,edge_damping_constant];
+                    [buffer appendFormat:@" start_node='%d'", j+1];
+                    [buffer appendFormat:@" end_node='%d'/>\n", i+1];
+                    
+                    counter = counter +1;
+                    
+                    // add a new line -
+                    [buffer appendString:@"\n"];
+                }
+            }
+        }
         
         // end -
         [buffer appendString:@"\t</listOfEdges>\n"];
     }
 }
+
 
 -(void)loadNodeArrayIntoBuffer:(NSMutableString *)buffer usingBlueprintDocument:(NSXMLDocument *)document
 {
@@ -193,7 +238,10 @@
         [buffer appendString:@"\t<listOfNodes>\n"];
         
         // iterate through list of points -
-        NSInteger counter = 0;
+        
+        NSInteger counter = 1; //ac2283 made this change to see if this solves the edge array problem.
+        //NSInteger counter = 0;
+        
         for (NSArray *row_array in points_array)
         {
             // array -
@@ -220,6 +268,8 @@
             // update counter -
             counter = counter + 1;
         }
+        
+        numberOfNodes = counter-1; //ac2283 made this change to see if this solves the edge array problem.
         
         // end -
         [buffer appendString:@"\t</listOfNodes>\n"];
@@ -249,7 +299,10 @@
         [formatter setNumberStyle:NSNumberFormatterDecimalStyle];
         
         // iterate through list of points -
-        NSInteger counter = 0;
+        
+        NSInteger counter = 1; //ac2283 made this change to see if this fixes the edge array struct
+        //NSInteger counter = 0;
+        
         for (NSArray *row_array in points_array)
         {
             
@@ -267,10 +320,10 @@
                     NSString *converted_number = [number stringValue];
                     
                     // grab the value -
-                    [value_array addObject:converted_number];                    
+                    [value_array addObject:converted_number];
                 }
             }
-                        
+            
             // line -
             [buffer appendFormat:@"\t\t<triangle index='%lu' node_index_1='%@' node_index_2='%@' node_index_3='%@'/>\n",counter,
              [value_array objectAtIndex:0],

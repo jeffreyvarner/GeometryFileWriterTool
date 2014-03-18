@@ -19,8 +19,8 @@
 +(void)writeBuffer:(NSString *)buffer
              toURL:(NSURL *)fileURL;
 +(NSArray *)loadGenericFlatFile:(NSString *)filePath
-                 withRecordDeliminator:(NSString *)recordDeliminator
-                  withFieldDeliminator:(NSString *)fieldDeliminator;
+          withRecordDeliminator:(NSString *)recordDeliminator
+           withFieldDeliminator:(NSString *)fieldDeliminator;
 
 +(NSString *)lookupInputPathForTransformationWithName:(NSString *)transformName inTree:(NSXMLDocument *)blueprintTree;
 +(NSString *)lookupOutputPathForTransformationWithName:(NSString *)transformName inTree:(NSXMLDocument *)blueprintTree;

@@ -42,8 +42,8 @@
 }
 
 +(NSArray *)loadGenericFlatFile:(NSString *)filePath
-                 withRecordDeliminator:(NSString *)recordDeliminator
-                  withFieldDeliminator:(NSString *)fieldDeliminator
+          withRecordDeliminator:(NSString *)recordDeliminator
+           withFieldDeliminator:(NSString *)fieldDeliminator
 {
     // Method attributes -
     NSError *error = nil;
