@@ -134,8 +134,7 @@
         
         // Triangle array -
         NSArray *triangle_array = [self myTriangleNodeArray];
-        NSInteger counter = 1; //ac2283 made this change to see if this solves the edge array problem.
-        //NSInteger counter = 0;
+        NSInteger counter = 1;       // starting from 1 instead of 0 solved edge struct bug
         
         for (NSArray *row_array in triangle_array)
         {
@@ -239,8 +238,7 @@
         
         // iterate through list of points -
         
-        NSInteger counter = 1; //ac2283 made this change to see if this solves the edge array problem.
-        //NSInteger counter = 0;
+        NSInteger counter = 1;     // starting from 1 instead of 0 solved edge struct bug
         
         for (NSArray *row_array in points_array)
         {
@@ -269,7 +267,7 @@
             counter = counter + 1;
         }
         
-        numberOfNodes = counter-1; //ac2283 made this change to see if this solves the edge array problem.
+        numberOfNodes = counter-1;
         
         // end -
         [buffer appendString:@"\t</listOfNodes>\n"];
